@@ -1,4 +1,5 @@
-import fetchJson from '../../utils/fetch-json';
+import fetchJson from '../../utils/fetch-json.js';
+
 
 
 export default class SortableTable {
@@ -6,44 +7,9 @@ export default class SortableTable {
   subElements = {};
   data = [];
   loading = false;
-  
-  constructor(headersConfig = [], {
-    url = '',
-    sorted = {
-      id: headersConfig.find(item => item.sortable).id,
-      order: 'asc'
-    },
-    isSortLocally = false,
-    step = 20,
-    start = 1,
-    end = start + step
-  } = {}) {
-    this.headersConfig = headersConfig;
-    this.url = new URL(url, process.env.BACKEND_URL);
-    this.sorted = sorted;
-    this.isSortLocally = isSortLocally;
-    this.step = step;
-    this.start = start;
-    this.end = end;
-
-    this.render();
-  }
- 
-  async render() {
-    const {id, order} = this.sorted;
-    const wrapper = document.createElement('div');
-
-    wrapper.innerHTML = this.getTable();
-    this.element = wrapper.firstElementChild;
-    this.subElements = this.getSubElements(this.element);
-
-    const data = await this.loadData(id, order, this.start, this.end);
-
-    this.renderRows(data);
-    this.initEventListeners();
-
-    return this.element
-  }
+  step = 30;
+  start = 0;
+  end = this.start + this.step;
 
   onWindowScroll = async () => {
     const { bottom } = this.element.getBoundingClientRect();
@@ -94,6 +60,44 @@ export default class SortableTable {
     }
   };
 
+  constructor(headersConfig = [], {
+    url = '',
+    sorted = {
+      id: headersConfig.find(item => item.sortable).id,
+      order: 'desc'
+    },
+    isSortLocally = false,
+    step = 20,
+    start = 1,
+    end = start + step
+  } = {}) {
+    this.headersConfig = headersConfig;
+    this.url = new URL(url, process.env.BACKEND_URL);
+    this.sorted = sorted;
+    this.isSortLocally = isSortLocally;
+    this.step = step;
+    this.start = start;
+    this.end = end;
+
+    this.render();
+  }
+
+  async render() {
+    const {id, order} = this.sorted;
+    const wrapper = document.createElement('div');
+
+    wrapper.innerHTML = this.getTable();
+
+    const element = wrapper.firstElementChild;
+
+    this.element = element;
+    this.subElements = this.getSubElements(element);
+
+    const data = await this.loadData(id, order, this.start, this.end);
+
+    this.renderRows(data);
+    this.initEventListeners();
+  }
 
   async loadData(id, order, start = this.start, end = this.end) {
     this.url.searchParams.set('_sort', id);
@@ -119,23 +123,9 @@ export default class SortableTable {
   update(data) {
     const rows = document.createElement('div');
 
-    this.data = [...this.data, ...data];
-    rows.innerHTML = this.getTableRows(data);
-
+    this.data = [...data];
+    rows.innerHTML = this.getTableRows(this.data);
     this.subElements.body.append(...rows.childNodes);
-  }
-
-  
-  getTable() {
-    return `
-      <div class="sortable-table">
-        ${this.getTableHeader()}
-        ${this.getTableBody(this.data)}
-        <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
-        <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
-          No products
-        </div>
-      </div>`;
   }
 
   getTableHeader() {
@@ -195,11 +185,23 @@ export default class SortableTable {
     }).join('');
   }
 
+  getTable() {
+    return `
+      <div class="sortable-table">
+        ${this.getTableHeader()}
+        ${this.getTableBody(this.data)}
+
+        <div data-element="loading" class="loading-line sortable-table__loading-line"></div>
+
+        <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
+          No products
+        </div>
+      </div>`;
+  }
+
   initEventListeners() {
     this.subElements.header.addEventListener('pointerdown', this.onSortClick);
-    if (!this.isSortLocally) {
     document.addEventListener('scroll', this.onWindowScroll);
-    }
   }
 
   sortOnClient(id, order) {
@@ -256,7 +258,7 @@ export default class SortableTable {
   }
 
   remove() {
-    if (this.element) this.element.remove();
+    this.element.remove();
   }
 
   destroy() {
