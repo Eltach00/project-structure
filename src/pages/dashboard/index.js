@@ -29,7 +29,7 @@ export default class Page {
 
   async updateComponents({from, to}) {
       const data = await this.loadData(from, to)
-      this.components.sortableTable.update(data)
+      this.components.sortableTable.addRows(data)
       this.components.ordersChart.update(from, to)
       this.components.salesChart.update(from, to)
       this.components.customersChart.update(from, to)

@@ -15,3 +15,8 @@ router
   .addRoute(/^404\/?$/, 'error404')
   .setNotFoundPagePath('error404')
   .listen();
+
+const btn = document.getElementById('sideButton')
+btn.addEventListener('click', () => {
+  document.body.classList.toggle('is-collapsed-sidebar')
+})

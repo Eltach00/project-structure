@@ -11,6 +11,29 @@ export default class SortableTable {
   start = 0;
   end = this.start + this.step;
 
+  
+  constructor(header = [], {
+    url = '',
+    sorted = {
+      id: header.find(item => item.sortable).id,
+      order: 'desc'
+    },
+    isSortLocally = false,
+    step = 20,
+    start = 1,
+    end = start + step
+  } = {}) {
+    this.header = header;
+    this.url = new URL(url, process.env.BACKEND_URL);
+    this.sorted = sorted;
+    this.isSortLocally = isSortLocally;
+    this.step = step;
+    this.start = start;
+    this.end = end;
+
+    this.render();
+  }
+
   onWindowScroll = async () => {
     const { bottom } = this.element.getBoundingClientRect();
     const { id, order } = this.sorted;
@@ -60,27 +83,6 @@ export default class SortableTable {
     }
   };
 
-  constructor(headersConfig = [], {
-    url = '',
-    sorted = {
-      id: headersConfig.find(item => item.sortable).id,
-      order: 'desc'
-    },
-    isSortLocally = false,
-    step = 20,
-    start = 1,
-    end = start + step
-  } = {}) {
-    this.headersConfig = headersConfig;
-    this.url = new URL(url, process.env.BACKEND_URL);
-    this.sorted = sorted;
-    this.isSortLocally = isSortLocally;
-    this.step = step;
-    this.start = start;
-    this.end = end;
-
-    this.render();
-  }
 
   async render() {
     const {id, order} = this.sorted;
@@ -130,7 +132,7 @@ export default class SortableTable {
 
   getTableHeader() {
     return `<div data-element="header" class="sortable-table__header sortable-table__row">
-      ${this.headersConfig.map(item => this.getHeaderRow(item)).join('')}
+      ${this.header.map(item => this.getHeaderRow(item)).join('')}
     </div>`;
   }
 
@@ -171,7 +173,7 @@ export default class SortableTable {
   }
 
   getTableRow(item) {
-    const cells = this.headersConfig.map(({id, template}) => {
+    const cells = this.header.map(({id, template}) => {
       return {
         id,
         template
@@ -229,7 +231,7 @@ export default class SortableTable {
 
   sortData(id, order) {
     const arr = [...this.data];
-    const column = this.headersConfig.find(item => item.id === id);
+    const column = this.header.find(item => item.id === id);
     const {sortType, customSorting} = column;
     const direction = order === 'asc' ? 1 : -1;
 
