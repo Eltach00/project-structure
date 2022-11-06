@@ -1,5 +1,6 @@
 .sortable-list {
   position: relative;
+  list-style: none;
   padding: 0;
   margin: 12px 0;
 }

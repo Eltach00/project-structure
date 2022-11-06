@@ -54,6 +54,7 @@ export default class SortableList {
     this.element = document.createElement('ul');
     this.element.className = 'sortable-list';
 
+    
     this.addItems();
     this.initEventListeners();
   }
