@@ -49,7 +49,7 @@ export default class ColumnChart {
   getLink() {
     if (this.link) {
       return `
-          <a href="${this.link}/" class="column-chart__link">View all</a>
+          <a href="/${this.link}" class="column-chart__link">View all</a>
           `;
     }
     return "";

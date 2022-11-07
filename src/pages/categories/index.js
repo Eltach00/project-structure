@@ -107,9 +107,9 @@ export default class Page {
         return /*html */`
             <div class='categories'>
                 <div class="content__top-panel">
-                <h1 class="page-title">Категории товаров</h1>
+                <h1 class="page-title">The Categories of Products</h1>
                 </div>
-                <p>Подкатегории можно перетаскивать, меняя их порядок внутри своей категории.</p> 
+                <p>Subcategories can be dragged and dropped to change their order within their category.</p> 
                 <div data-element='categoriesContainer'>
                 </div>
             </div>

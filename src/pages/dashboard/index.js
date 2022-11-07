@@ -63,7 +63,7 @@ export default class Page {
           to
         },
         label: 'orders',
-        link: '#'
+        link: 'sales'
       });
 
       const salesChart = new ColumnChart({

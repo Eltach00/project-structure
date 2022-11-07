@@ -213,14 +213,14 @@ element;
   async save() {
     const product = this.getFormData();
 
-    const result = await fetchJson(`${BACKEND_URL}/api/rest/products`, {
+    const result = await fetchJson(`${BACKEND_URL}api/rest/products`, {
       method: this.productId ? 'PATCH' : 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(product)
     });
-
+    
     this.dispatchEvent(result.id);
   }
 
@@ -229,7 +229,7 @@ element;
     const excludedFields = ['images'];
     const formatToNumber = ['price', 'quantity', 'discount', 'status'];
     const fields = Object.keys(this.defaultFormData).filter(item => !excludedFields.includes(item));
-    const getValue = field => productForm.querySelector(`[name=${field}]`);
+    const getValue = field => productForm.querySelector(`[name=${field}]`).value;
     const values = {};
 
     for (const field of fields) {
@@ -257,8 +257,13 @@ element;
 
   dispatchEvent(id) {
     const event = this.productId
-      ? new CustomEvent('product-updated', { detail: id })
-      : new CustomEvent('product-saved');
+      ? new CustomEvent('product-updated', { 
+      bubbles: true,
+      detail: id 
+    })
+      : new CustomEvent('product-saved', {
+        bubbles: true
+      });
 
     this.element.dispatchEvent(event);
   }

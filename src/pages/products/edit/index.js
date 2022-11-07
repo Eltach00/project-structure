@@ -1,3 +1,4 @@
+import NotificationMessage from "../../../components/notification";
 import ProductForm from "../../../components/product-form";
 
 
@@ -17,7 +18,21 @@ export default class Page {
     this.element = wrapper.firstElementChild;
     this.subElements = this.getSubElements(this.element)
     this.initComponents()
+    this.addEvents()
     return this.element;
+  }
+
+  addEvents() {
+    this.element.addEventListener('product-saved', this.handleSave)
+    this.element.addEventListener('product-updated', this.handleSave)
+  }
+
+  handleSave = event => {
+    const notification = new NotificationMessage('Product Saved', {
+      duration: 2000,
+      type: 'success'
+    })
+    notification.show()
   }
 
   async initComponents() {
