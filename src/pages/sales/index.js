@@ -54,7 +54,8 @@ export default class Page {
       });
       const sortableTable = new SortableTable(header, {
         url: `api/rest/orders?createdAt_gte=${from.toISOString()}&createdAt_lte=${to.toISOString()}&_sort=id&_order=desc&_start=0&_end=30`,
-        isSortLocally: false
+        isSortLocally: false,
+        haveLinks: false
       })
 
       this.components = {
