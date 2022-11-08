@@ -1,5 +1,7 @@
 # Admin Dashboard
 
+available at (https://course-js.javascript.ru/) 
+
 **Important!**
 
 For correct build via Webpack you must have:
